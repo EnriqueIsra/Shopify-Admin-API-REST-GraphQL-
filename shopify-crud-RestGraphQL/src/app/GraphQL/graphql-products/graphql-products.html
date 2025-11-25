@@ -1,0 +1,57 @@
+<mat-card>
+    <mat-card-title>Productos (GraphQL)</mat-card-title>
+
+    @if(loading) {
+    <div style="text-align: center;">
+        <mat-spinner></mat-spinner>
+    </div>
+    }
+    @if(error) {
+    <div style="color: red;">{{error}}</div>
+    }
+
+    <div style="margin-bottom: 12px;">
+
+        <button mat-raised-button color="primary" (click)="create()">Crear</button>
+        <button mat-button (click)="loadProducts()" style="margin-left: 8px;">Refrescar</button>
+    </div>
+
+    @if(!loading && products.length) {
+    <table mat-table [dataSource]="products" class="mat-elevation-z8">
+        <!-- ID -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let p">{{ p.id }}</td>
+        </ng-container>
+
+        <!-- Title -->
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Título</th>
+            <td mat-cell *matCellDef="let p">{{ p.title }}</td>
+        </ng-container>
+
+        <!-- Description -->
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Descripción</th>
+            <td mat-cell *matCellDef="let p">{{ p.body_html ?? p.descriptionHtml }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let p">
+                <button mat-button color="accent" (click)="edit(p.id)">Editar</button>
+                <button mat-button color="warn" (click)="delete(p.id)">Eliminar</button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    }
+    @if (!loading && !products.length) {
+        <div>
+            No hay productos
+        </div>
+    }
+</mat-card>
