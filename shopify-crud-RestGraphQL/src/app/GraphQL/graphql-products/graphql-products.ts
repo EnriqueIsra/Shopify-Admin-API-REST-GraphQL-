@@ -15,7 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './graphql-products.css',
 })
 export class GraphqlProducts {
-  displayedColumns = ['id', 'title', 'description', 'actions'];
+  displayedColumns = ['id', 'title', 'description', 'price', 'actions'];
   products: any[] = [];
   loading = false;
   error: string | null = null;
@@ -32,34 +32,47 @@ export class GraphqlProducts {
 
     this.gql.getProducts().subscribe({
       next: (res) => {
-        this.products = res.data?.products?.edges?.map((e: any) => e.node) ?? [];
+        this.products =
+          res.data?.products?.edges?.map((e: any) => {
+            const p = e.node;
+            const variant = p.variants?.edges?.[0]?.node;
+            return {
+              ...p,
+              price: variant?.price ?? '0.00',
+              variantId: variant?.id ?? null,
+            };
+          }) ?? [];
         this.loading = false;
       },
       error: (err) => {
         this.error = err.message;
         this.loading = false;
-      }
+      },
     });
   }
   create() {
     this.router.navigate(['/graphql/create']);
   }
-  edit (id: any) {
+  edit(id: any) {
     this.router.navigate(['/graphql/edit', id]);
-  } 
-  delete (id: any) {
-    if(!confirm('¿Eliminar producto?')) return;
+  }
+  delete(id: any) {
+    if (!confirm('¿Eliminar producto?')) return;
 
     this.gql.deleteProduct(id).subscribe({
       next: (res) => {
         const errors = res.data?.productDelete?.userErrors;
         if (errors && errors.length) {
-          alert("Error: " + errors.map((e: any) => e.message).join(", "));
+          alert('Error: ' + errors.map((e: any) => e.message).join(', '));
           return;
         }
         this.loadProducts(); // refresca la tabla
+        alert('Producto eliminado correctamente');  
       },
       error: (err) => alert('Error al eliminar: ' + err.message),
     });
+  }
+  goProducts() {
+    this.router.navigate(['/home/products']);
   }
 }

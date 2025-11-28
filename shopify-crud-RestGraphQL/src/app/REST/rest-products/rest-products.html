@@ -2,9 +2,12 @@
   <mat-card-title>Productos (REST)</mat-card-title>
 
   <mat-card-content>
-    <div *ngIf="loading" style="text-align: center">
+
+    @if(loading) {
+    <div style="text-align: center">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
+    }
 
     @if(error) {
     <div style="color: tomato; margin: 12px 0">
@@ -15,6 +18,8 @@
     <div style="margin-bottom: 12px">
       <button mat-raised-button color="primary" (click)="goCreate()">Crear producto</button>
       <button mat-button (click)="loadProducts()" style="margin-left: 8px">Refrescar</button>
+      <button mat-button (click)="goProducts()" style="margin-left: 8px;">Volver</button>
+
     </div>
 
     @if(!loading && products?.length){
@@ -36,6 +41,14 @@
         <th mat-header-cell *matHeaderCellDef>Descripción</th>
         <td mat-cell *matCellDef="let p">{{ p.body_html ?? p.descriptionHtml }}</td>
       </ng-container>
+
+      <!-- Price -->
+       <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>Precio</th>
+        <td mat-cell *matCellDef="let p">
+          $ {{ p.price }}
+        </td>
+       </ng-container>
 
       <!-- Actions -->
       <ng-container matColumnDef="actions">

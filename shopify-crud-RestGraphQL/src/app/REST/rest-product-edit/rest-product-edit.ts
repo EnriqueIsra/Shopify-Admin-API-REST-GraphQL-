@@ -20,15 +20,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
-  templateUrl: './rest-product-edit.html'
+  templateUrl: './rest-product-edit.html',
 })
 export class RestProductEdit {
   form!: FormGroup;
   loading = false;
   error: string | null = null;
   productId!: number;
+  productVariantId!: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +44,8 @@ export class RestProductEdit {
 
     this.form = this.fb.group({
       title: ['', Validators.required],
-      descriptionHtml: ['']
+      descriptionHtml: [''],
+      price: [0, Validators.required],
     });
 
     this.loadProduct();
@@ -54,17 +56,19 @@ export class RestProductEdit {
 
     this.api.getProduct(this.productId).subscribe({
       next: (res: any) => {
+        this.productVariantId = res?.product?.variants?.[0]?.id;
+
         this.form.patchValue({
           title: res?.product?.title ?? '',
-          descriptionHtml: res?.product?.body_html ?? ''
+          descriptionHtml: res?.product?.body_html ?? '',
+          price: res?.product?.variants?.[0]?.price ?? 0,
         });
-
         this.loading = false;
       },
       error: () => {
         this.error = 'Error al cargar producto';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -77,8 +81,12 @@ export class RestProductEdit {
     this.loading = true;
 
     const payload = {
-      title: this.form.value.title,
-      body_html: this.form.value.descriptionHtml
+      product: {
+        title: this.form.value.title,
+        body_html: this.form.value.descriptionHtml,
+        price: this.form.value.price,
+        variantId: this.productVariantId,
+      },
     };
 
     this.api.updateProduct(this.productId, payload).subscribe({
@@ -89,7 +97,7 @@ export class RestProductEdit {
       error: () => {
         this.error = 'Error al actualizar';
         this.loading = false;
-      }
+      },
     });
   }
 

@@ -1,0 +1,38 @@
+<h2>Crear nuevo pedido</h2>
+
+<form class="form-container">
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Nombre del cliente</mat-label>
+    <input matInput [(ngModel)]="order.first_name" name="first_name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Apellido del cliente</mat-label>
+    <input matInput [(ngModel)]="order.last_name" name="last_name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Variant ID</mat-label>
+    <input matInput [(ngModel)]="order.variantId" name="variantId" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Cantidad</mat-label>
+    <input matInput type="number" [(ngModel)]="order.quantity" name="quantity" required>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" class="full-width" (click)="createOrder()">
+    Crear Orden
+  </button>
+</form>
+
+<!-- Mensaje de éxito -->
+@if (createdOrder) {
+  <p class="success">Pedido creado correctamente</p>
+}
+
+<!-- Mensaje de error -->
+@if (errorMessage) {
+  <p class="error">{{ errorMessage }}</p>
+}

@@ -9,13 +9,19 @@ import { ShopifyRest } from '../../services/shopify-rest';
 
 @Component({
   selector: 'app-rest-products',
-  imports: [CommonModule, MatCardModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    MatCardModule, 
+    MatTableModule, 
+    MatButtonModule, 
+    MatProgressSpinnerModule
+  ],
   standalone: true,
   templateUrl: './rest-products.html',
   styleUrl: './rest-products.css',
 })
 export class RestProducts {
-  displayedColumns = ['id', 'title', 'description', 'actions'];
+  displayedColumns = ['id', 'title', 'description', 'price', 'actions'];
   products: any[] = [];
   loading = false;
   error: string | null = null;
@@ -31,7 +37,12 @@ export class RestProducts {
     this.error = null;
     this.shopifyRest.getProducts().subscribe({
       next: (res: any) => {
-        this.products = res.products ?? res; 
+        const raw = res.products ?? res;
+
+        this.products = raw.map((p: any) => ({
+          ...p,
+          price: p.variants?.[0]?.price ?? '0.00',
+        }));
         this.loading = false;
       },
       error: (err) => {
@@ -53,8 +64,15 @@ export class RestProducts {
   deleteProduct(id: any) {
     if (!confirm('¿Eliminar producto?')) return;
     this.shopifyRest.deleteProduct(id).subscribe({
-      next: () => this.loadProducts(),
+      next: () => {
+        this.loadProducts();
+        alert('Producto eliminado correctamente');
+      },
+
       error: (err) => alert('Error al eliminar: ' + (err?.message || err)),
     });
+  }
+  goProducts() {
+    this.router.navigate(['/home/products']);
   }
 }

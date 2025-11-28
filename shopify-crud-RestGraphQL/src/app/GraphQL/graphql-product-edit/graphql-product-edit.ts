@@ -26,6 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class GraphqlProductEdit {
   id!: string;
+  variantId!: string;
   form!: FormGroup;
   loading = false;
   error: string | null = null;
@@ -40,9 +41,11 @@ export class GraphqlProductEdit {
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id') ?? '';
 
+    // Formulario (con price)
     this.form = this.fb.group({
       title: ['', Validators.required],
       descriptionHtml: [''],
+      price: ['', Validators.required], 
     });
 
     this.loadProduct();
@@ -60,10 +63,20 @@ export class GraphqlProductEdit {
           this.loading = false;
           return;
         }
+        
+        // Extraer variantId y price
+        const variantEdge = p.variants?.edges?.[0];
+        if (variantEdge) {
+          this.variantId = variantEdge.node.id;
+        } 
 
+        const price = variantEdge?.node?.price ?? '';
+
+        // rellenar form
         this.form.patchValue({
           title: p.title,
           descriptionHtml: p.descriptionHtml,
+          price: price,
         });
 
         this.loading = false;
@@ -81,29 +94,41 @@ export class GraphqlProductEdit {
     this.loading = true;
     this.error = null;
 
-    const input = {
-      title: this.form.value.title,
-      descriptionHtml: this.form.value.descriptionHtml,
-    };
+    const title = this.form.value.title;
+    const description = this.form.value.descriptionHtml;
+    const price = String(this.form.value.price);
 
-    this.gql.updateProduct(this.id, input).subscribe({
+    this.gql.updateProductWithPrice(this.id, title, description, price, this.variantId)
+    .subscribe({
       next: (res) => {
-        const errors = res.data?.productUpdate?.userErrors;
+        // Respuesta combinada del backend (productUpdate + variantUpdate)
+        const productErrors = 
+        (res as any)?.productUpdate?.data?.productUpdate?.userErrors ?? 
+        (res as any)?.productUpdate?.userErrors ?? 
+        [];
+        
+        const variantErrors = 
+        (res as any)?.variantUpdate?.data?.productVariantsBulkUpdate?.userErrors ?? 
+        (res as any)?.variantUpdate?.userErrors ?? 
+        [];
 
-        if (errors && errors.length) {
-          this.error = errors.map((e: any) => e.message).join(', ');
+        const allErrors = [...productErrors, ...variantErrors];
+
+        if (allErrors.length) {
+          this.error = allErrors.map((e: any) => e.message).join(', ');
           this.loading = false;
           return;
         }
-
+        alert('Producto actualizado correctamente');
         this.router.navigate(['/graphql']);
       },
       error: (err) => {
-        this.error = err.message;
+        this.error = err?.message || 'Error al actualizar';
         this.loading = false;
       },
     });
   }
+
   cancel() {
     this.router.navigate(['/graphql']);
   }

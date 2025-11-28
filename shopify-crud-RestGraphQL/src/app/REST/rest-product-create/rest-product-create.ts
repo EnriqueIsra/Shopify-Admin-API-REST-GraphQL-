@@ -19,7 +19,7 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
   ],
   templateUrl: './rest-product-create.html',
   styleUrl: './rest-product-create.css',
@@ -36,6 +36,7 @@ export class RestProductCreate {
     this.form = this.fb.group({
       title: ['', Validators.required],
       descriptionHtml: [''],
+      price: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
     });
   }
 
@@ -48,14 +49,17 @@ export class RestProductCreate {
     this.loading = true;
     this.error = null;
 
-    const { title, descriptionHtml } = this.form.value;
+    const { title, descriptionHtml, price } = this.form.value;
 
     const payload = {
       title,
-      body_html: descriptionHtml
+      body_html: descriptionHtml,
+      variants: [{ price: String(price) }],
     };
 
-    this.api.createProduct(payload).subscribe({
+    console.log("Payload enviado:", JSON.stringify({ product: payload }, null, 2));
+
+    this.api.createProduct({ product: payload }).subscribe({
       next: () => {
         alert('Producto creado correctamente');
         this.loading = false;

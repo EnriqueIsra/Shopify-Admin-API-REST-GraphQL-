@@ -36,28 +36,32 @@ export class GraphqlProductCreate {
     this.form = this.fb.group({
       title: ['', Validators.required],
       descriptionHtml: [''],
+      price: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
     });
   }
 
   submit() {
-    if (this.form.invalid) return;
-
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.loading = true;
     this.error = null;
 
-    const input = {
-      title: this.form.value.title,
-      descriptionHtml: this.form.value.descriptionHtml,
-    };
+    const { title, descriptionHtml, price } = this.form.value;
 
-    this.gql.createProduct(input).subscribe({
-      next: () => {
+    // Convertir price a string con dos decimales
+    const priceStr = typeof price === 'number' ? price.toFixed(2) : String(price);
+
+    this.gql.createProductWithPrice(title, descriptionHtml, priceStr).subscribe({
+      next: (res) => {
+        // opcional: revisar errores devueltos por backend
         alert('Producto creado correctamente');
         this.loading = false;
         this.router.navigate(['/graphql']);
       },
       error: (err) => {
-        this.error = err.message;
+        this.error = err?.message || 'Error al crear producto';
         this.loading = false;
       },
     });

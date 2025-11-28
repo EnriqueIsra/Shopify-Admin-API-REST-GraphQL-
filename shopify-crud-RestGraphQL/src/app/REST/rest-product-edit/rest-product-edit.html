@@ -2,43 +2,53 @@
   <mat-card-title>Editar Producto</mat-card-title>
 
   @if (loading) {
-    <div style="text-align:center; margin:20px;">
-      <mat-spinner></mat-spinner>
-    </div>
+  <div style="text-align:center; margin:20px;">
+    <mat-spinner></mat-spinner>
+  </div>
   }
 
   @if (error) {
-    <div style="color:red; margin:10px 0;">{{ error }}</div>
+  <div style="color:red; margin:10px 0;">{{ error }}</div>
   }
 
   @if (!loading) {
 
-    <form [formGroup]="form" (ngSubmit)="save()" style="margin-top:20px;">
+  <form [formGroup]="form" (ngSubmit)="save()" style="margin-top:20px;">
 
-      <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
-        <mat-label>Título</mat-label>
-        <input matInput formControlName="title" />
+    <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" />
 
-        @if (form.get('title')?.invalid && form.get('title')?.touched) {
-          <mat-error>El título es obligatorio</mat-error>
-        }
-      </mat-form-field>
+      @if (form.get('title')?.invalid && form.get('title')?.touched) {
+      <mat-error>El título es obligatorio</mat-error>
+      }
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
-        <mat-label>Descripción HTML</mat-label>
-        <textarea matInput rows="5" formControlName="descriptionHtml"></textarea>
-      </mat-form-field>
+    <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
+      <mat-label>Descripción HTML</mat-label>
+      <textarea matInput rows="5" formControlName="descriptionHtml"></textarea>
+    </mat-form-field>
 
-      <div style="display:flex; gap:10px; margin-top:15px;">
-        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
-          Guardar cambios
-        </button>
+    <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
+      <mat-label>Precio</mat-label>
+      <input matInput type="number" formControlName="price" />
 
-        <button mat-button color="warn" type="button" (click)="cancel()">
-          Cancelar
-        </button>
-      </div>
+      @if (form.get('price')?.invalid && form.get('price')?.touched) {
+      <mat-error>El precio es obligatorio</mat-error>
+      }
+    </mat-form-field>
 
-    </form>
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
+        Guardar cambios
+      </button>
+
+      <button mat-button color="warn" type="button" (click)="cancel()">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
   }
 </mat-card>

@@ -13,6 +13,6 @@ import { MatButtonModule } from '@angular/material/button';
 export class Home {
 constructor(private router: Router) {}
 
-goRest() {this.router.navigate(['/rest']); }
-goGraphql() {this.router.navigate(['/graphql']); }
+goProducts() {this.router.navigate(['/home/products']); }
+goGraphql() {this.router.navigate(['/orders']); }
 }

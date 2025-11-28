@@ -25,10 +25,22 @@ export async function getProductRestById(productId) {
 //          CREATE PRODUCT
 // =================================
 export async function createProductRest(productData) {
+
+    const p = productData.product;
     const url = `${base}/products.json`;
 
     const body = {
-        product: productData
+        product: {
+            title: p.title,
+            body_html: p.body_html,
+            vendor: p.vendor ?? "Default vendor",
+            product_type: p.product_type ?? "Default type",
+            variants: [
+                {
+                    price: p.variants?.[0]?.price ?? "0.00"  // PRECIO 
+                }
+            ]
+        }
     };
 
     return await httpRequest(url, {
@@ -40,16 +52,28 @@ export async function createProductRest(productData) {
     });
 }
 
+
 // =================================
 //          UPDATE PRODUCT
 // =================================
 export async function updateProductRest(productId, updates) {
     const url = `${base}/products/${productId}.json`;
 
+    const u = updates.product;
+
     const body = {
         product: {
             id: productId,
-            ...updates
+            title: u.title,
+            body_html: u.body_html,
+            variants: u.price
+                ? [
+                    {
+                        id: u.variantId, // 👈 Necesario: el variant del producto
+                        price: u.price
+                    }
+                ]
+                : undefined
         }
     };
 
