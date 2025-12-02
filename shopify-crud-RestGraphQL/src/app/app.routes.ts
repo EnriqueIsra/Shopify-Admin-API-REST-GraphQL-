@@ -9,6 +9,7 @@ import { GraphqlProductEdit } from './GraphQL/graphql-product-edit/graphql-produ
 import { HomeProducts } from './home/home-products/home-products';
 import { OrdersComponent } from './Orders/orders.component';
 import { OrderCreate } from './Orders/order-create/order-create';
+import { CustomersComponent } from './Customers/customers.component';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -29,6 +30,9 @@ export const routes: Routes = [
   // Orders
   { path: 'orders', component: OrdersComponent },
   { path: 'order/create', component: OrderCreate },
+
+  // Clientes 
+  {path: 'customers', component: CustomersComponent},
 
   // fallback
   { path: '**', redirectTo: '' }, // opcional

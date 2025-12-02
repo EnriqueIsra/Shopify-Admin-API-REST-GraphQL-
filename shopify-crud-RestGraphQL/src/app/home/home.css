@@ -1,0 +1,20 @@
+.contenedor {
+    display: flex;
+    flex-direction: column;       /* Elementos uno debajo del otro */
+    justify-content: center;      /* Centrado vertical */
+    align-items: center;          /* Centrado horizontal */
+    min-height: 80vh;             /* Altura para centrarlo */
+    padding-top: 40px;
+    text-align: center;           /* Centrar texto */
+}
+
+h1 {
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+button {
+    margin: 10px 10px;               
+}
+

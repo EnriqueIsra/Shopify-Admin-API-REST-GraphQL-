@@ -1,5 +1,5 @@
 import { shopifyConfig } from "../config/shopify.js";
-import { httpRequest } from "../utils/httpClient.js";
+import { httpRequest } from "../utils/http-client.js";
 
 const base = shopifyConfig.restBaseUrl;
 

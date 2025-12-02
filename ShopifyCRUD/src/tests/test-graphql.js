@@ -5,7 +5,7 @@ import {
     getProductsGraphql,
     updateProductGraphql,
     deleteProductGraphql
-} from "../graphql/productGraphql.js";
+} from "../graphql/product-graphql.js";
 
 console.log("=== CREAR PRODUCTO CON PRECIO ===\n");
 

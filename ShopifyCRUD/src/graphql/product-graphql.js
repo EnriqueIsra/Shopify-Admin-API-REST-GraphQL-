@@ -1,7 +1,7 @@
 // src/graphql/productGraphql.js
 
 import { shopifyConfig } from "../config/shopify.js";
-import { httpRequest } from "../utils/httpClient.js";
+import { httpRequest } from "../utils/http-client.js";
 
 const GRAPHQL_URL = `https://${shopifyConfig.storeDomain}/admin/api/${shopifyConfig.version}/graphql.json`;
 

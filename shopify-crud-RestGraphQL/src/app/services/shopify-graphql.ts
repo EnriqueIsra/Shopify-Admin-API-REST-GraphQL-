@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ShopifyGraphql {
   private endpoint = 'http://localhost:3000/graphql';
-  private apiCreate = 'http://localhost:3000/api/graphql/products';
+  private apiCreate = 'http://localhost:3000/graphql/products';
 
   constructor(private http: HttpClient) {}
 
@@ -40,24 +40,6 @@ export class ShopifyGraphql {
     return this.query(query);
   }
 
-  /* createProduct(input: any): Observable<any> {
-    const mutation = `
-    mutation($input: ProductInput!) {
-      productCreate(input: $input) {
-        product {
-          id
-          title
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `;
-    // Endpoint proxy que recibe { query, variables }
-    return this.query(mutation, { input });
-  } */
 
   createProductWithPrice(title: string, description: string, price: string): Observable<any> {
     return this.http.post(this.apiCreate, { title, description, price });

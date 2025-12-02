@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import { getOrdersRest, createOrderRest } from "../rest/orderRest.js";
+import { getOrdersRest, createOrderRest } from "../rest/order-rest.js";
 
 const app = express();
 app.use(cors());

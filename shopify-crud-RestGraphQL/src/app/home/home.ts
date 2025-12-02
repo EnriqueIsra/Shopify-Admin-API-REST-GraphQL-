@@ -11,8 +11,15 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './home.css',
 })
 export class Home {
-constructor(private router: Router) {}
+  constructor(private router: Router) {}
 
-goProducts() {this.router.navigate(['/home/products']); }
-goGraphql() {this.router.navigate(['/orders']); }
+  goProducts() {
+    this.router.navigate(['/home/products']);
+  }
+  goGraphql() {
+    this.router.navigate(['/orders']);
+  }
+  goCustomers() {
+    this.router.navigate(['/customers']);
+  }
 }
