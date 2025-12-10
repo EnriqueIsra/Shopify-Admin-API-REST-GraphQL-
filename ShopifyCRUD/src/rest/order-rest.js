@@ -7,9 +7,11 @@ const base = shopifyConfig.restBaseUrl;
 //        GET ORDERS (REST)
 // =================================
 export async function getOrdersRest() {
+
     // status=any -> trae TODAS las órdenes
     // pagadas, pendientes y no pagadas
-    const url = `${base}/orders.json?status=any`;
+    const url = `${base}/orders.json?status=any&fields=id,order_number,total_price,financial_status,created_at,line_items,customer`;
+
 
     // Obtenere respuesta completa de Shopify
     const data = await httpRequest(url);
@@ -29,7 +31,7 @@ export async function getOrdersRest() {
 
         // Calcular el total de artículos
         const totalItems = o.line_items.reduce((sum, item) => sum + item.quantity, 0);
-
+        console.log("CUSTOMER DESDE SHOPIFY:", o.customer);
         return {
 
             id: o.id,
@@ -41,8 +43,14 @@ export async function getOrdersRest() {
             created_at: o.created_at, // ISO válido
             created_at_formatted: formattedDate, // fecha bonita
             customer: o.customer
-                ? `${o.customer.first_name || ""} ${o.customer.last_name || ""}`.trim()
-                : "Sin cliente",
+                ? {
+                    id: o.customer.id,
+                    first_name: o.customer.first_name,
+                    last_name: o.customer.last_name,
+                    full_name: `${o.customer.first_name || ""} ${o.customer.last_name || ""}`.trim()
+                }
+                : null,
+
             total_items: totalItems,
             items: o.line_items.map(item => ({
                 title: item.title,
@@ -52,6 +60,7 @@ export async function getOrdersRest() {
                 variant_id: item.variant_id
             }))
         }
+        
     });
     return formatted;
 }

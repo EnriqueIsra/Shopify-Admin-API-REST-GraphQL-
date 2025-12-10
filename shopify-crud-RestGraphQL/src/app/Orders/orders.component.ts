@@ -43,6 +43,7 @@ export class OrdersComponent implements OnInit {
     this.loading = true;
     this.ordersService.getOrders().subscribe({
       next: (data) => {
+        console.log("ORDENES DESPUÉS DEL MAPEADO:", data);
         this.orders = data;
         this.loading = false;
       },
